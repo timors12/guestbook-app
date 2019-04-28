@@ -12,7 +12,7 @@ node('Jenkins_slave_ansible_docker') {
       url: 'https://github.com/hezil/guestbook-app.git'
   }
 
-  stage "k8s culster deploy"
+  stage "build docker image"
   dir ('php-redis/') {
     sh "docker build --tag ${DockerImage} ."
   }
