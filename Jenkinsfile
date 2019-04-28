@@ -57,4 +57,3 @@ node('Jenkins_slave_ansible_docker') {
       sh('sudo ansible-playbook -i  ./ec2.py -l tag_Name_k8s_m1 guestbook_webapp')
   }
 }
-}
