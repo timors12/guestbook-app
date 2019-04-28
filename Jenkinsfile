@@ -9,7 +9,7 @@ node('Jenkins_slave_ansible_docker') {
 
   stage('Git') { // Get code from GitLab repository
     git branch: 'master',
-      url: 'git@github.com:hezil/ansible_job.git'
+      url: 'git@github.com:hezil/guestbook-app.git'
   }
 
   stage "k8s culster deploy"
