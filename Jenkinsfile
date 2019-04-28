@@ -53,7 +53,7 @@ node('Jenkins_slave_ansible_docker') {
   
   stage "deploy guestbook_webapp in k8s culster"
   dir ('.') {
-      sh('sudo ansible -i ./ec2.py -m ping -u ubuntu Name_k8s_m1')
+      sh('sudo ansible -i ./ec2.py -m ping -u ubuntu tag_Name_k8s_m1')
       sh('sudo ansible-playbook -i  ./ec2.py -l tag_Name_k8s_m1 guestbook_webapp')
   }
 }
