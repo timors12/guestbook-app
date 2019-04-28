@@ -1,4 +1,4 @@
-node('Jenkins_slave_ansible_docker') {
+node('docker-slave-general') {
   def DockerImage = "hezil/guestbook"
   def ContainerName = "guestbook"
 
