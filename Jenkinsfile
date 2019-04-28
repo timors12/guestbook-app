@@ -19,7 +19,7 @@ node('Jenkins_slave_ansible_docker') {
 
   stage('Run') { // Run the built image
 
-    sh "docker run -d --name ${ContainerName} --rm -p 8082:80 ${DockerImage}; sleep 5"
+    sh "docker run -d --name ${ContainerName} --rm -p 8088:80 ${DockerImage}; sleep 5"
   }
 
   stage('Test') { // Run tests on container
