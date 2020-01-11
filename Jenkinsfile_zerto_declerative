@@ -31,7 +31,7 @@ pipeline {
             steps {
                 echo 'Run docker image....'
                 sh "docker run -d --name ${params.ContainerName} --rm -p 8088:80 ${params.DockerImage}; sleep 5"
-                sh 'docker inspect -f "{{ .NetworkSettings.IPAddress }}" ${params.ContainerName}'
+                sh """docker inspect -f "{{ .NetworkSettings.IPAddress }}" ${params.ContainerName}"""
                 sh "docker port test_sshd 80"
             }
         }
