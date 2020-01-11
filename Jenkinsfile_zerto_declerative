@@ -65,10 +65,5 @@ pipeline {
                 sh "docker image rm -f ${params.DockerImage} || true"
             }
         }
-        post {
-            failure {
-                echo 'fuch'
-            }
-        }
     }
 }
