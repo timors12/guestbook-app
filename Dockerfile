@@ -28,5 +28,3 @@ RUN sed -i 's#CustomLog /proc/self/fd/1 combined#CustomLog "|/bin/cat" combined#
 ADD guestbook.php /var/www/html/guestbook.php
 ADD controllers.js /var/www/html/controllers.js
 ADD index.html /var/www/html/index.html
-
-EXPOSE 80
