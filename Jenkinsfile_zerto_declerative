@@ -35,10 +35,12 @@ pipeline {
         }
         stage('Test image') {
             steps {                
-                def dockerOutput = sh (
+                script {def dockerOutput = sh (
                     script: 'curl -s --head  --request GET http://172.17.0.1:8088 | grep "200 OK" | wc -l',
                     returnStdout: true
                     ).trim()
+                }
+
                 if ( dockerOutput == "1" ) {
                     currentBuild.result = 'SUCCESS'
                 } else {
