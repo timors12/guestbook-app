@@ -51,7 +51,7 @@ pipeline {
         stage('Push') { // push image to docker hub
             steps {
                 echo 'Push image to docker hub....'
-                withDockerRegistry(credentialsId: 'hezil_dockerhub') {
+                withDockerRegistry('', credentialsId: 'hezil_dockerhub') {
                     sh "docker push ${params.DockerImage}"
                     sh "docker rmi ${params.DockerImage}"
                 }
