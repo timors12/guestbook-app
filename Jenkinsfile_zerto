@@ -46,8 +46,4 @@ node('slave_52.14.210.84') {
             sh "docker rmi ${DockerImage}"
         }
   }
-  stage('Git') { // Get code from GitLab repository
-    git branch: 'master',
-      url: 'https://github.com/hezil/ansible_job.git'
-  }
 }
