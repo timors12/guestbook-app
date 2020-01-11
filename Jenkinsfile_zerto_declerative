@@ -1,5 +1,5 @@
 pipeline {
-    agent {slave_52.14.210.84}
+    agent {'slave_52.14.210.84'}
     
     def DockerImage = "hezil/guestbook"
     def ContainerName = "guestbook"
