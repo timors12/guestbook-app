@@ -33,7 +33,8 @@ pipeline {
                 //sh "docker run -d --name ${params.ContainerName} --rm --expose 80 ${params.DockerImage}; sleep 5"
                 sh "docker run -d -P --name  ${params.ContainerName} ${params.DockerImage}; sleep 5"
                 sh "docker inspect -f \"{{ .NetworkSettings.IPAddress }}\" ${params.ContainerName}"
-                sh "docker port ${params.ContainerName} 80 | grep -o -P \"[0-9]{2,5}\""
+                sh "docker port ${params.ContainerName} 80 | grep -o -P \"[0-9]{2,5}\"" > outfile
+                port = readFile 'outFile'
             }
         }
         stage('Test docker image') {
