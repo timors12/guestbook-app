@@ -65,5 +65,12 @@ pipeline {
                 sh "docker image rm -f ${params.DockerImage} || true"
             }
         }
+        post {
+            always {
+                mail to: hezi.zizooo@gmail.com, subject: 'The Pipeline failed :('
+        }
+            failure {
+                mail to: hezi.zizooo@gmail.com, subject: 'The Pipeline failed :('
+        }
     }
 }
