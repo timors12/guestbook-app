@@ -31,6 +31,8 @@ pipeline {
             steps {
                 echo 'Run docker image....'
                 sh "docker run -d --name ${params.ContainerName} --rm -p 8088:80 ${params.DockerImage}; sleep 5"
+                sh "docker inspect -f "{{ .NetworkSettings.IPAddress }}" ${params.ContainerName}"
+                sh "docker port test_sshd 80"
             }
         }
         stage('Test docker image') {
@@ -69,7 +71,7 @@ pipeline {
     post {
         always {
             echo "bye!!"
-            //mail bcc: '', body: "<b>Example</b><br>\\n\\<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "ERROR CI: Project name -> ${env.JOB_NAME}", to: "hezil@zizooo.com";
+            #mail bcc: '', body: "<b>Example</b><br>\\n\\<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "ERROR CI: Project name -> ${env.JOB_NAME}", to: "hezil@zizooo.com";
             slackSend baseUrl: 'https://hooks.slack.com/services/', channel: '#jenkins_pipeline_demo', color: 'good', message: 'Yes!Yes!Yes!', teamDomain: 'hezil', tokenCredentialId: 'slack'
         }
     }
