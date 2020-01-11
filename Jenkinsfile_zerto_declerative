@@ -48,7 +48,7 @@ pipeline {
                 }
             }
         }
-        stage('Push') { // push image to docker hub
+        stage('Push docker image') { // push image to docker hub
             steps {
                 echo 'Push image to docker hub....'
                 withDockerRegistry(credentialsId: 'hezil_dockerhub', url: "") {
