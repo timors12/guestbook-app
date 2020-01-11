@@ -1,15 +1,15 @@
 pipeline {
     agent { node { label 'slave_52.14.210.84' } }
-    
-    def DockerImage = "hezil/guestbook"
-    def ContainerName = "guestbook"
-
+    parameters {
+        string(name: 'DockerImage', defaultValue: 'hezil/guestboo', description: '')
+        string(name: 'ContainerName', defaultValue: 'guestbook', description: '')
+    }
     stages {
         stage('Pre') { // Run pre-build steps
             steps {
                 echo 'Pre..'
                 cleanWs()
-                sh "docker container rm -f ${ContainerName} || true"
+                sh "docker container rm -f ${params.ContainerName} || true"
             }
         }
         stage('Set Git repo') {
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 echo 'Build docker image..'
                 dir ('php-redis/') {
-                    sh "docker build --tag ${DockerImage} ."
+                    sh "docker build --tag ${params.DockerImage} ."
                 }
 
             }
@@ -30,7 +30,7 @@ pipeline {
         stage('Run docker image') {
             steps {
                 echo 'Run docker image....'
-                sh "docker run -d --name ${ContainerName} --rm -p 8088:80 ${DockerImage}; sleep 5"
+                sh "docker run -d --name ${params.ContainerName} --rm -p 8088:80 ${params.DockerImage}; sleep 5"
             }
         }
         stage('Test image') {
@@ -52,8 +52,8 @@ pipeline {
             steps {
                 echo 'Push image to docker hub....'
                 withDockerRegistry(credentialsId: 'hezil_dockerhub') {
-                    sh "docker push ${DockerImage}"
-                    sh "docker rmi ${DockerImage}"
+                    sh "docker push ${params.DockerImage}"
+                    sh "docker rmi ${params.DockerImage}"
                 }
             }
         }
@@ -61,9 +61,9 @@ pipeline {
             steps {
                 echo 'Pre..'
                 cleanWs()
-                sh "docker container stop ${ContainerName} || true"
-                sh "docker container rm -f ${ContainerName} || true"
-                sh "docker image rm -f ${DockerImage} || true"
+                sh "docker container stop ${params.ContainerName} || true"
+                sh "docker container rm -f ${params.ContainerName} || true"
+                sh "docker image rm -f ${params.DockerImage} || true"
             }
         }
     }
