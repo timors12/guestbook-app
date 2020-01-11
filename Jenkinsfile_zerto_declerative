@@ -33,7 +33,7 @@ pipeline {
                 sh "docker run -d --name ${params.ContainerName} --rm -p 8088:80 ${params.DockerImage}; sleep 5"
             }
         }
-        stage('Test image') {
+        stage('Test docker image') {
             steps {                
                 script {def dockerOutput = sh (
                     script: 'curl -s --head  --request GET http://172.17.0.1:8088 | grep "200 OK" | wc -l',
