@@ -12,9 +12,9 @@ pipeline {
                 sh "docker container rm -f ${params.ContainerName} || true"
             }
         }
-        stage('Set Git repo') {
+        stage('Cloning Git') {
             steps {
-                echo 'set Git repo..'
+                echo 'Cloning Git..'
                 git url: 'https://github.com/hezil/guestbook-app.git', branch: 'master'
             }
         }
@@ -51,7 +51,7 @@ pipeline {
         stage('Push') { // push image to docker hub
             steps {
                 echo 'Push image to docker hub....'
-                docker.withRegistry( '', 'hezil_dockerhub' ){
+                withDockerRegistry('', credentialsId: 'hezil_dockerhub', url: "https://hub.docker.com/repository/docker/hezil/guestbook") {
                     sh "docker push ${params.DockerImage}"
                 }
             }
