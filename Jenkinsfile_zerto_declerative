@@ -1,0 +1,70 @@
+Jenkinsfile (Declarative Pipeline)
+pipeline {
+    agent 'slave_52.14.210.84'
+    def DockerImage = "hezil/guestbook"
+    def ContainerName = "guestbook"
+
+    stages {
+        stage('Pre') { // Run pre-build steps
+            steps {
+                echo 'Pre..'
+                cleanWs()
+                sh "docker container rm -f ${ContainerName} || true"
+            }
+        }
+        stage('Set Git repo') {
+            steps {
+                echo 'set Git repo..'
+                git url: 'https://github.com/hezil/guestbook-app.git', branch: 'master'
+            }
+        }
+        stage('Build docker image') {
+            steps {
+                echo 'Build docker image..'
+                dir ('php-redis/') {
+                    sh "docker build --tag ${DockerImage} ."
+                }
+
+            }
+        }
+        stage('Run docker image') {
+            steps {
+                echo 'Run docker image....'
+                sh "docker run -d --name ${ContainerName} --rm -p 8088:80 ${DockerImage}; sleep 5"
+            }
+        }
+        stage('Test image') {
+            steps {
+                echo 'Test image....'
+                def dockerOutput = sh (
+                    script: 'curl -s --head  --request GET http://172.17.0.1:8088 | grep "200 OK" | wc -l',
+                    returnStdout: true).trim()
+                if ( dockerOutput == "1" ) {
+                    currentBuild.result = 'SUCCESS'
+                } else {
+                    currentBuild.result = 'FAILURE'
+                    sh "echo webserver returned ${dockerOutput}"
+                }
+
+            }
+        }
+        stage('Push') { // push image to docker hub
+            steps {
+                echo 'Push image to docker hub....'
+                withDockerRegistry(credentialsId: 'hezil_dockerhub') {
+                    sh "docker push ${DockerImage}"
+                    sh "docker rmi ${DockerImage}"
+                }
+            }
+        }
+        stage('Cleanup') { // Remove docker Container and image
+            steps {
+                echo 'Pre..'
+                cleanWs()
+                sh "docker container stop ${ContainerName} || true"
+                sh "docker container rm -f ${ContainerName} || true"
+                sh "docker image rm -f ${DockerImage} || true"
+            }
+        }
+    }
+}
