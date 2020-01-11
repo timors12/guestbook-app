@@ -30,15 +30,15 @@ pipeline {
         stage('Run docker image') {
             steps {
                 echo 'Run docker image....'
-                sh "docker run -d --name ${params.ContainerName} --rm -p 8088:80 ${params.DockerImage}; sleep 5"
+                sh "docker run -d --name ${params.ContainerName} --rm ${params.DockerImage}; sleep 5"
                 sh "docker inspect -f \"{{ .NetworkSettings.IPAddress }}\" ${params.ContainerName}"
-                sh "docker port ${params.ContainerName} 80"
+                def port = sh "docker port ${params.ContainerName} 80 | grep -e \"\:[0-9]{1,5}\""
             }
         }
         stage('Test docker image') {
             steps {                
                 script {def dockerOutput = sh (
-                    script: 'curl -s --head  --request GET http://172.17.0.1:8088 | grep "200 OK" | wc -l',
+                    script: 'curl -s --head  --request GET http://localhost:${port} | grep "200 OK" | wc -l',
                     returnStdout: true
                     ).trim()
                     if ( dockerOutput == "1" ) {
