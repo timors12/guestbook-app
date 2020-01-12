@@ -35,7 +35,7 @@ pipeline {
                 sh "docker inspect -f \"{{ .NetworkSettings.IPAddress }}\" ${params.ContainerName}"
                 sh "docker port ${params.ContainerName} 80 | grep -o -P \"[0-9]{2,5}\" > outfile"
                 script {def dockerPort = sh (
-                    script: "sh \"docker port ${params.ContainerName} 80 | grep -o -P \"[0-9]{2,5}\"\"" ,
+                    script: sh "docker port ${params.ContainerName} 80 | grep -o -P \"[0-9]{2,5}\"" ,
                     returnStdout: true
                     ).trim()}
                 
