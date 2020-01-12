@@ -1,0 +1,42 @@
+pipeline {
+    //agent { node { label 'slave_52.14.210.84' } }
+    agent any
+    parameters {
+        choice(name: 'PLATFORM_FILTER', choices: ['all', 'linux1', 'linux2', 'linux3'], description: 'Run on specific platform')
+        string(name: 'DockerImage', defaultValue: 'hezil/guestbook', description: '')
+        string(name: 'ContainerName', defaultValue: 'guestbook', description: '')
+    }
+        stage('BuildAndTest') {
+            matrix {
+                agent {
+                    label "${PLATFORM}-agent"
+                }
+                when { anyOf {
+                    expression { params.PLATFORM_FILTER == 'all' }
+                    expression { params.PLATFORM_FILTER == env.PLATFORM }
+                } }
+                axes {
+                    axis {
+                        name 'PLATFORM'
+                        values 'linux1', 'linux2', 'linux3'
+                    }
+                }
+                stage('Run docker image') {
+                    steps {
+                        echo 'Pull and run docker image....'
+                        sh "docker pull ${params.DockerImage}:latest"
+                        sh "docker run -d --name ${params.ContainerName}_${PLATFORM} --rm ${params.DockerImage}; sleep 5"
+                        sh "docker inspect -f \"{{ .NetworkSettings.IPAddress }}\" ${params.ContainerName}"
+                        def port = sh "docker port ${params.ContainerName}_${PLATFORM} 80 | grep -o -P \"[0-9]{2,5}\""
+                    }
+                }
+                    stage('Test') {
+                        steps {
+                            echo "Do Test for ${PLATFORM}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
