@@ -2,7 +2,7 @@ pipeline {
     agent { node { label 'slave_52.14.210.84' } }
     parameters {
         string(name: 'DockerImage', defaultValue: 'hezil/guestboo', description: '')
-        string(name: 'ContainerName', defaultValue: 'guestbook', description: '')
+        string(name: 'ContainerName', defaultValue: 'guestbook-${BUILD_NUMBER}', description: '')
     }
     stages {
         stage('Pre') { // Run pre-build steps
