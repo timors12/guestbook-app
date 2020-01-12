@@ -22,19 +22,21 @@ pipeline {
                         values 'linux1', 'linux2', 'linux3'
                     }
                 }
-                stage('Run docker image') {
-                    steps {
-                        echo 'Pull and run docker image....'
-                        sh "docker pull ${params.DockerImage}:latest"
-                        sh "docker run -d --name ${params.ContainerName}_${PLATFORM} --rm ${params.DockerImage}; sleep 5"
-                        sh "docker inspect -f \"{{ .NetworkSettings.IPAddress }}\" ${params.ContainerName}"
-                        def port = sh "docker port ${params.ContainerName}_${PLATFORM} 80 | grep -o -P \"[0-9]{2,5}\""
-                    }
-                    stage('Test') {
+                stages {
+                    stage('Run docker image') {
                         steps {
-                            echo "Do Test for ${PLATFORM}"
+                            echo 'Pull and run docker image....'
+                            sh "docker pull ${params.DockerImage}:latest"
+                            sh "docker run -d --name ${params.ContainerName}_${PLATFORM} --rm ${params.DockerImage}; sleep 5"
+                            sh "docker inspect -f \"{{ .NetworkSettings.IPAddress }}\" ${params.ContainerName}"
+                            def port = sh "docker port ${params.ContainerName}_${PLATFORM} 80 | grep -o -P \"[0-9]{2,5}\""
                         }
-                    }
+                        stage('Test') {
+                            steps {
+                                echo "Do Test for ${PLATFORM}"
+                            }
+                        }
+                    }    
                 }
             }
         }
