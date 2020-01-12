@@ -38,6 +38,15 @@ pipeline {
                             echo "Do Test for ${PLATFORM}"
                         }
                     }
+                    stage('Cleanup') { // Remove docker Container and image
+                        steps {
+                            echo "Cleanup for ${PLATFORM}"
+                            cleanWs()
+                            sh "docker container stop ${params.ContainerName}_${PLATFORM} || true"
+                            sh "docker container rm -f ${params.ContainerName}_${PLATFORM} || true"
+                            sh "docker image rm -f ${params.DockerImage} || true"
+                        }
+                    }
                 }
             }
         }
