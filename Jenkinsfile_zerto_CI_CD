@@ -2,13 +2,13 @@ pipeline {
     agent { node { label 'slave_52.14.210.84' } }
 
     stages {
-        stage('Build') {
+        stage('Build CI') {
             steps {
                 echo 'Building..'
                 build 'CI'
             }
         }
-        stage('Test') {
+        stage('Build CD') {
             steps {
                 echo 'Testing..'
                 build 'CD'
