@@ -29,7 +29,6 @@ pipeline {
                         sh "docker inspect -f \"{{ .NetworkSettings.IPAddress }}\" ${params.ContainerName}"
                         def port = sh "docker port ${params.ContainerName}_${PLATFORM} 80 | grep -o -P \"[0-9]{2,5}\""
                     }
-                }
                     stage('Test') {
                         steps {
                             echo "Do Test for ${PLATFORM}"
