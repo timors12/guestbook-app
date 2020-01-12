@@ -6,6 +6,7 @@ pipeline {
         string(name: 'DockerImage', defaultValue: 'hezil/guestbook', description: '')
         string(name: 'ContainerName', defaultValue: 'guestbook', description: '')
     }
+    stages {
         stage('BuildAndTest') {
             matrix {
                 agent {
