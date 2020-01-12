@@ -1,0 +1,7 @@
+pipeline {
+    node('slave_52.14.210.84') {
+        build 'CI'
+        //sleep 180
+        build 'CD'
+    }
+}
