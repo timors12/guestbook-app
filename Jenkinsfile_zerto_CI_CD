@@ -1,7 +1,18 @@
 pipeline {
-    node('slave_52.14.210.84') {
-        build 'CI'
-        //sleep 180
-        build 'CD'
+    agent { node { label 'slave_52.14.210.84' } }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                build 'CI'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+                build 'CD'
+            }
+        }
     }
 }
