@@ -10,7 +10,7 @@ pipeline {
         stage('BuildAndTest') {
             matrix {
                 agent {
-                    label agent { node { label 'slave_52.14.210.84' } }
+                    label 'slave_52.14.210.84'
                 }
                 when { anyOf {
                     expression { params.PLATFORM_FILTER == 'all' }
